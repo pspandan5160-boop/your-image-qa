@@ -27,7 +27,7 @@ app.add_middleware(
 
 AIPIPE_TOKEN = os.environ.get("AIPIPE_TOKEN")
 CHAT_URL = "https://aipipe.org/openai/v1/chat/completions"
-MODEL = "gpt-4o-mini"
+MODEL = "gpt-4o"
 
 
 class ImageQARequest(BaseModel):
@@ -64,8 +64,10 @@ async def answer_image(req: ImageQARequest):
                         "type": "text",
                         "text": (
                             f"{req.question}\n\n"
-                            "Answer with ONLY the raw value. If the answer is a number, "
-                            "return just the number with no currency symbols, units, or commas."
+                            "Look at the image carefully and answer with ONLY the raw value, "
+                            "nothing else - no explanation, no labels, no full sentences. "
+                            "If the answer is a number, return just the number as digits "
+                            "(e.g. 4089.35), with no currency symbols, units, or commas."
                         ),
                     },
                     {"type": "image_url", "image_url": {"url": img_data}},
