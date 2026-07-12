@@ -89,5 +89,15 @@ async def answer_image(req: ImageQARequest):
 
     data = resp.json()
     answer_text = data["choices"][0]["message"]["content"].strip()
+    answer_text = clean_answer(answer_text)
 
     return ImageQAResponse(answer=answer_text)
+
+
+def clean_answer(text: str) -> str:
+    """Strip common currency symbols, commas, and stray whitespace/quotes
+    in case the model doesn't follow the 'raw number only' instruction exactly."""
+    text = text.strip().strip('"').strip("'")
+    for symbol in ["$", "\u20b9", "\u20ac", "\u00a3", ","]:
+        text = text.replace(symbol, "")
+    return text.strip()
